@@ -53,3 +53,23 @@ export async function GET(req) {
     );
   }
 }
+
+export async function DELETE(req) {
+  try {
+    const body = await req.json();
+    const { id, user_email } = body;
+
+    const result = await pool.query(
+      "DELETE FROM exam_entries WHERE id = $1 AND user_email = $2",
+      [id, user_email]
+    );
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error("DELETE error:", err);
+    return NextResponse.json(
+      { success: false, error: err.message },
+      { status: 500 }
+    );
+  }
+}

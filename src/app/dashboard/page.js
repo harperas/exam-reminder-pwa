@@ -62,6 +62,27 @@ export default function DashboardPage() {
     }
   };
 
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this exam?")) return;
+
+    const res = await fetch("/api/exams", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id,
+        user_email: session.user.email,
+      }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      alert("Exam deleted!");
+      loadEntries(); // refresh list
+    } else {
+      alert("Failed to delete: " + data.error);
+    }
+  };
+
   useEffect(() => {
     if (status === "authenticated") {
       loadEntries();
@@ -115,22 +136,6 @@ export default function DashboardPage() {
                   className="border p-2 rounded"
                   required
                 />
-                {/* <input
-                  type="date"
-                  name="application_date"
-                  value={form.application_date}
-                  onChange={handleChange}
-                  className="border p-2 rounded"
-                  required
-                />
-                <input
-                  type="date"
-                  name="expected_admit_card_date"
-                  value={form.expected_admit_card_date}
-                  onChange={handleChange}
-                  className="border p-2 rounded"
-                  required
-                /> */}
                 <label htmlFor="application_date">
                   Application Applied Date:
                 </label>
@@ -197,6 +202,12 @@ export default function DashboardPage() {
                         </span>
                         {entry.expected_admit_card_date}
                       </p>
+                      <button
+                        onClick={() => handleDelete(entry.id)}
+                        className="mt-3 inline-block text-sm bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
+                      >
+                        Delete
+                      </button>
                     </li>
                   ))}
                 </ul>
