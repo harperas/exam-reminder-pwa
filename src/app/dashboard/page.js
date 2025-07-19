@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DatePicker, Input, Tabs } from "rsuite";
 import CanvasBackgroundEffect from "../components/CanvasBackgroundEffect";
+import toast from "react-hot-toast";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -32,7 +33,7 @@ export default function DashboardPage() {
   };
 
   const handleDateChange = (e, type) => {
-    console.log(e, type, type.target.name, type.target.value);
+    // console.log(e, type, type.target.name, type.target.value);
     setForm((prev) => ({ ...prev, [type.target.name]: type.target.value }));
   };
 
@@ -49,7 +50,7 @@ export default function DashboardPage() {
 
     const data = await res.json();
     if (data.success) {
-      alert("Exam Saved!");
+      toast.success("Exam Saved!");
       setForm({
         exam_name: "",
         application_date: "",
@@ -58,7 +59,7 @@ export default function DashboardPage() {
       });
       loadEntries(); // refresh list
     } else {
-      alert("Failed to save exam: " + data.error);
+      toast.error("Failed to save exam: " + data.error);
     }
   };
 
@@ -76,10 +77,10 @@ export default function DashboardPage() {
 
     const data = await res.json();
     if (data.success) {
-      alert("Exam deleted!");
+      toast.success("Exam deleted!");
       loadEntries(); // refresh list
     } else {
-      alert("Failed to delete: " + data.error);
+      toast.error("Failed to delete: " + data.error);
     }
   };
 
@@ -90,8 +91,6 @@ export default function DashboardPage() {
       router.push("/login");
     }
   }, [status]);
-
-  console.log(form);
 
   if (status === "loading") return <p>Loading...</p>;
 
